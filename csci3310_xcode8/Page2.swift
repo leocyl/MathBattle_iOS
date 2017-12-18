@@ -34,6 +34,8 @@ class Page2: UIViewController {
     @IBOutlet weak var player1_question: UILabel!
     @IBOutlet weak var player1_answer: UILabel!
     @IBOutlet weak var player1_enter: UIButton!
+    @IBOutlet weak var player1_showname: UILabel!
+    
     
     @IBOutlet weak var player2_0: UIButton!
     @IBOutlet weak var player2_1: UIButton!
@@ -58,6 +60,7 @@ class Page2: UIViewController {
     @IBOutlet weak var player2_answer: UILabel!
     @IBOutlet weak var player2_question: UILabel!
     @IBOutlet weak var player2_enter: UIButton!
+    @IBOutlet weak var player2_showname: UILabel!
     
     @IBOutlet weak var exit: UIButton!
     
@@ -72,6 +75,10 @@ class Page2: UIViewController {
     var winnername = ""
     var player1_calation_num = 2
     var player2_calation_num = 2
+    
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,6 +112,7 @@ class Page2: UIViewController {
         enterName()
     }
     
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -131,6 +139,7 @@ class Page2: UIViewController {
         player2_7.transform = CGAffineTransform(rotationAngle: 3.14)
         player2_8.transform = CGAffineTransform(rotationAngle: 3.14)
         player2_9.transform = CGAffineTransform(rotationAngle: 3.14)
+        player2_showname.transform = CGAffineTransform(rotationAngle: 3.14)
     }
     
     func game_init(){
@@ -205,11 +214,11 @@ class Page2: UIViewController {
           //              self.performSegue(withIdentifier: "Page1", sender: nil)
                     alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action: UIAlertAction!) in
                         self.saveRanking(winner: self.p1name, loser:self.p2name)
-                        
+                        self.performSegue(withIdentifier: "unwindToPage1", sender: self)
                 }))
-                    
                     // 4. Present the alert.
                     self.present(alert, animated: true, completion: nil)
+                    
                 default:
                     break
                 }
@@ -251,9 +260,11 @@ class Page2: UIViewController {
                     
                     refreshAlert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action: UIAlertAction!) in
                         self.saveRanking(winner: self.p2name, loser:self.p1name)
+                        self.performSegue(withIdentifier: "unwindToPage1", sender: self)
                     }))
                     
                     present(refreshAlert, animated: true, completion: nil)
+                    
                 default:
                     break
                 }
@@ -398,7 +409,7 @@ class Page2: UIViewController {
             }
         }
         
-        difficultyList.append(["difficulty1" : "Easy", "difficulty2" : "Easy"])
+        difficultyList.append(["difficulty1" : "Normal", "difficulty2" : "Normal"])
     }
     
     func saveRanking(winner:String, loser:String) {
@@ -408,7 +419,17 @@ class Page2: UIViewController {
         // 設定要新增的看板資料
         // 使用自動產生的 BoardHistory 類別
         let insRank = Entity(entity: entity, insertInto: managedContext)
-        insRank.name = winner+" defeat "+loser
+        let date = Date()
+        
+        let dateformatter = DateFormatter()
+        dateformatter.dateStyle = .full
+        dateformatter.timeStyle = .long
+        dateformatter.dateFormat = "YYYY-MM-dd HH:mm"
+        
+        let dateString = dateformatter.string(from: date)
+        
+        
+        insRank.name = "[" + dateString + "]    " + winner + " defeated " + loser
         
         
         
@@ -448,6 +469,8 @@ func enterName() {
         self.p2name = (textField2?.text)!
         print(self.p1name)
         print(self.p2name)
+        self.player1_showname.text = self.p1name
+        self.player2_showname.text = self.p2name
     }))
     self.present(alert, animated: true, completion: nil)
 }

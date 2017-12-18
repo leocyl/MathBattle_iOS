@@ -99,7 +99,7 @@ class Page3: UIViewController {
             }
         }
         
-        difficultyList.append(["difficulty1" : "Easy", "difficulty2" : "Easy"])
+        difficultyList.append(["difficulty1" : "Normal", "difficulty2" : "Normal"])
         
     }
     func deletHistory(){
